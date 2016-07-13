@@ -1,0 +1,21 @@
+{
+  "name": "mecha_ssanjun_bot",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "Junhee Han",
+    "email": "ssanjun.dev@gmail.com",
+    "url": "https://github.com/ssanjun"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "request": "^2.73.0",
+    "telegram-node-bot": "^3.0.10",
+    "xml2js": "^0.4.17"
+  }
+}
