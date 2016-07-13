@@ -16,14 +16,11 @@ const SEOUL_OPENINF_ULTRAFINEDUST_TOKEN = process.env.SEOUL_OPENINF_ULTRAFINEDUS
 
 
 class WeatherController extends TelegramBaseController {
-    /**
-     * @param {Scope} $
-     */
-    fineDustHandler($) {
+    getFineDustMessage() {
         // http://openAPI.seoul.go.kr:8088/(인증키)/xml/ForecastWarningMinuteParticleOfDustService/1/1/
         const url = 'http://openAPI.seoul.go.kr:8088/'+SEOUL_OPENINF_FINEDUST_TOKEN+'/json/ForecastWarningMinuteParticleOfDustService/1/1/';
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(url, (requestError, response, body) => {
                 if (requestError) return reject(requestError);
                 resolve(JSON.parse(body));
@@ -37,17 +34,21 @@ class WeatherController extends TelegramBaseController {
                 '*활동* : ' + data.ALARM_CNDT
             ];
 
-            $.sendMessage(message.join('\n'), { parse_mode: 'Markdown' });
+            return message.join('\n');
         }).catch((err) => console.log(err));
-
+    }
+    fineDustHandler($) {
+        this.getFineDustMessage.bind(this).then((message) => {
+            this.send($, message);
+        });
     }
 
-    ultraFineDustHandler($) {
+    getUltraFindDustMessage() {
         // http://openapi.seoul.go.kr:8088/(인증키)/xml/ForecastWarningUltrafineParticleOfDustService/1/5/
 
         const url = 'http://openAPI.seoul.go.kr:8088/'+SEOUL_OPENINF_ULTRAFINEDUST_TOKEN+'/json/ForecastWarningUltrafineParticleOfDustService/1/5/';
 
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(url, (requestError, response, body) => {
                 if (requestError) return reject(requestError);
                 resolve(JSON.parse(body));
@@ -61,15 +62,21 @@ class WeatherController extends TelegramBaseController {
                 '*활동* : ' + data.ALARM_CNDT
             ];
 
-            $.sendMessage(message.join('\n'), { parse_mode: 'Markdown' });
+            return message.join('\n');
         }).catch((err) => console.log(err));
     }
 
-    weatherHandler($) {
+    ultraFineDustHandler($) {
+        this.getUltraFindDustMessage.bind(this).then((message) => {
+            this.send($, message);
+        });
+    }
+
+    getWeatherMessage() {
         // http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=109
         // const url = 'http://www.kma.go.kr/weather/forecast/mid-term-rss3.jsp?stnId=109';
         const url = 'http://www.kma.go.kr/wid/queryDFSRSS.jsp?zone=1141056500';
-        new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             request(url, (requestError, response, body) => {
                 if (requestError) return reject(requestError);
                 parseString(body, (parseError, result) => {
@@ -115,11 +122,21 @@ class WeatherController extends TelegramBaseController {
                 );
             });
 
-            $.sendMessage(message.join('\n'), { parse_mode: 'Markdown' });
-            this.fineDustHandler($);
-            this.ultraFineDustHandler($);
+            return message.join('\n');
+        }).catch((err) => console.log(err));
+    }
 
-        }).catch((err) => console.log(err))
+    weatherHandler($) {
+        this.getWeatherMessage.bind(this).then((message) => {
+            this.send($, message);
+        });
+
+        this.fineDustHandler($);
+        this.ultraFineDustHandler($);
+    }
+    
+    send($, message) {
+        $.sendMessage(message, { parse_mode: 'Markdown' });
     }
 
     get routes() {
