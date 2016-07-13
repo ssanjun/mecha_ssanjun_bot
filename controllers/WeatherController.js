@@ -37,8 +37,9 @@ class WeatherController extends TelegramBaseController {
             return message.join('\n');
         }).catch((err) => console.log(err));
     }
+    
     fineDustHandler($) {
-        this.getFineDustMessage.bind(this).then((message) => {
+        this.getFineDustMessage().then((message) => {
             this.send($, message);
         });
     }
@@ -67,7 +68,7 @@ class WeatherController extends TelegramBaseController {
     }
 
     ultraFineDustHandler($) {
-        this.getUltraFindDustMessage.bind(this).then((message) => {
+        this.getUltraFindDustMessage().then((message) => {
             this.send($, message);
         });
     }
