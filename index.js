@@ -14,8 +14,7 @@ const tg = new Telegram.Telegram(TELEGRAM_BOT_TOKEN);
 const WeatherController = require('./controllers/WeatherController');
 
 tg.router
-    .when(['/미세먼지'], new WeatherController())
-    .when(['/날씨'], new WeatherController());
+    .when(['/미세먼지','/초세먼지', '/날씨'], new WeatherController());
 
 const http = require('http');
 const PORT = 3001;

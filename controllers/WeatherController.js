@@ -142,6 +142,7 @@ class WeatherController extends TelegramBaseController {
     get routes() {
         return {
             '/미세먼지': 'fineDustHandler',
+            '/초미세먼지': 'fineDustHandler',
             '/날씨': 'weatherHandler'
         }
     }
