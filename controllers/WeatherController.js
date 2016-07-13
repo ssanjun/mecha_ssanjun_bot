@@ -127,7 +127,7 @@ class WeatherController extends TelegramBaseController {
     }
 
     weatherHandler($) {
-        this.getWeatherMessage.bind(this).then((message) => {
+        this.getWeatherMessage.then((message) => {
             this.send($, message);
         });
 
