@@ -1,0 +1,12 @@
+{
+  "apps": [{
+    "name": "telegram/mecha_ssanjun_bot",
+    "script": "index.js",
+    "env": {
+      "NODE_ENV": "production"
+    },
+
+    "cwd": "/home/bot/telegram/mecha_ssanjun_bot",
+    "exec_mode": "fork"
+  }]
+}
