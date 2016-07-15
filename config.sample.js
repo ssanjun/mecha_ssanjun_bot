@@ -6,6 +6,8 @@
 process.env.TELEGRAM_BOT_TOKEN = '';
 process.env.SEOUL_OPENINF_FINEDUST_TOKEN = '';
 process.env.SEOUL_OPENINF_ULTRAFINEDUST_TOKEN = '';
+process.env.USER_ID = '';
+process.env.PHANTOMJS_PATH = '';
 
 if (!process.env.TELEGRAM_BOT_TOKEN) {
     console.error('TELEGRAM_BOT_TOKEN is not defined');

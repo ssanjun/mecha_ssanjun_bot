@@ -10,9 +10,12 @@ const Telegram = require('telegram-node-bot');
 const TelegramBaseController = Telegram.TelegramBaseController;
 const request = require('request');
 const parseString = require('xml2js').parseString;
+const phantom = require('phantom');
+const fs = require('fs-promise');
 
 const SEOUL_OPENINF_FINEDUST_TOKEN = process.env.SEOUL_OPENINF_FINEDUST_TOKEN;
 const SEOUL_OPENINF_ULTRAFINEDUST_TOKEN = process.env.SEOUL_OPENINF_ULTRAFINEDUST_TOKEN;
+const PHANTOMJS_PATH = process.env.PHANTOMJS_PATH;
 
 
 class WeatherController extends TelegramBaseController {
@@ -126,10 +129,59 @@ class WeatherController extends TelegramBaseController {
             return message.join('\n');
         }).catch((err) => console.log(err));
     }
+    createNaverWeather() {
+        const web = {};
+        const url = 'https://m.search.naver.com/search.naver?query=%EC%84%9C%EC%9A%B8+%EC%A3%BC%EA%B0%84%EB%82%A0%EC%94%A8';
+        return phantom.create([], {phantomPath: PHANTOMJS_PATH})
+            .then(instance => {
+                web.instance = instance;
+                return instance.createPage();
+            })
+            .then(page => {
+                web.page = page;
+                return page.open(url);
+            })
+            .then(status => {
+                if (status !== 'success') {
+                    throw new Error('Error page.open : ' + url);
+                }
+                return web.page.property('viewportSize', {width: 414, height: 736});
+            })
+            .then(()=>{
+                return web.page.property('clipRect', { top: 166, left: 0, width: 414, height: 874 });
+            })
+            .then(()=>{
+                web.filename = new Date().getTime();
+                return web.page.render(`../images/${web.filename}.png`);
+            })
+            .then(result => {
+                web.page.close();
+                web.instance.exit();
+
+                if (result) {
+                    return web.filename;
+                } else {
+                    throw new Error(result);
+                }
+            })
+            .catch(error => {
+                console.log(error.stack);
+                web.instance.exit();
+                throw error;
+            });
+    }
+
+    getNaverWather() {
+        return this.createNaverWeather();
+    }
 
     weatherHandler($) {
-        this.getWeatherMessage().then((message) => {
-            this.send($, message);
+        // this.getWeatherMessage().then((message) => {
+        //     this.send($, message);
+        // });
+        this.getNaverWather().then((file) => {
+            // this.send($, file);
+            this.sendPhoto($, { path: `../images/${file}.png`});
         });
 
         this.fineDustHandler($);
@@ -138,6 +190,10 @@ class WeatherController extends TelegramBaseController {
     
     send($, message) {
         $.sendMessage(message, { parse_mode: 'Markdown' });
+    }
+
+    sendPhoto($, options) {
+        $.sendPhoto(options);
     }
 
     get routes() {
