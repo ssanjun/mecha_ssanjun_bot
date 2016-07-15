@@ -134,23 +134,28 @@ class WeatherController extends TelegramBaseController {
         const url = 'https://m.search.naver.com/search.naver?query=%EC%84%9C%EC%9A%B8+%EC%A3%BC%EA%B0%84%EB%82%A0%EC%94%A8';
         return phantom.create([], {phantomPath: PHANTOMJS_PATH})
             .then(instance => {
+                console.log(1);
                 web.instance = instance;
                 return instance.createPage();
             })
             .then(page => {
+                console.log(2);
                 web.page = page;
                 return page.open(url);
             })
             .then(status => {
+                console.log(3);
                 if (status !== 'success') {
                     throw new Error('Error page.open : ' + url);
                 }
                 return web.page.property('viewportSize', {width: 414, height: 736});
             })
             .then(()=>{
+                console.log(4);
                 return web.page.property('clipRect', { top: 166, left: 0, width: 414, height: 874 });
             })
             .then(()=>{
+                console.log(5);
                 web.filename = new Date().getTime();
                 return web.page.render(`../images/${web.filename}.png`);
             })
