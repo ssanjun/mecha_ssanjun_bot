@@ -153,7 +153,7 @@ class WeatherController extends TelegramBaseController {
             .then(()=>{
                 web.filename = new Date().getTime();
                 web.filepath = `./images/${web.filename}.png`;
-                return web.page.render(web.pfilepath);
+                return web.page.render(web.filepath);
             })
             .then(result => {
                 web.page.close();
