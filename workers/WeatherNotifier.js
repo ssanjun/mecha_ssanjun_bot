@@ -24,11 +24,14 @@ class WeatherNotifier {
     
     send() {
         Promise.all([
-            wc.getWeatherMessage(),
+            // wc.getWeatherMessage(),
+            wc.getNaverWather(),
             wc.getFineDustMessage(),
             wc.getUltraFindDustMessage()
         ]).then((message) => {
-            this.tg.api.sendMessage(USER_ID, message[0], { parse_mode: 'Markdown' });
+            // this.tg.api.sendMessage(USER_ID, message[0], { parse_mode: 'Markdown' });
+            this.tg.api.sendPhoto(USER_ID, {path: message[0].filepath});
+            
             this.tg.api.sendMessage(USER_ID, message[1], { parse_mode: 'Markdown' });
             this.tg.api.sendMessage(USER_ID, message[2], { parse_mode: 'Markdown' });
         });

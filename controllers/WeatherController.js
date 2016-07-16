@@ -152,14 +152,15 @@ class WeatherController extends TelegramBaseController {
             })
             .then(()=>{
                 web.filename = new Date().getTime();
-                return web.page.render(`../images/${web.filename}.png`);
+                web.filepath = `./images/${web.filename}.png`;
+                return web.page.render(web.pfilepath);
             })
             .then(result => {
                 web.page.close();
                 web.instance.exit();
 
                 if (result) {
-                    return web.filename;
+                    return web;
                 } else {
                     throw new Error(result);
                 }
@@ -179,9 +180,9 @@ class WeatherController extends TelegramBaseController {
         // this.getWeatherMessage().then((message) => {
         //     this.send($, message);
         // });
-        this.getNaverWather().then((file) => {
+        this.getNaverWather().then((web) => {
             // this.send($, file);
-            this.sendPhoto($, { path: `../images/${file}.png`});
+            this.sendPhoto($, { path: web.filepath});
         });
 
         this.fineDustHandler($);
